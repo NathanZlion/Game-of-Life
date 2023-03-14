@@ -35,37 +35,6 @@ export class City {
         this.cleanUp();
         return this.currentCity;
     }
-    
-    // nextState() {
-    //     /**
-    //      0 = __dead__ ,1 = __alive__ , 10 = intermediate dead =   live => __dead__ ,11 = intermediate alive =   dead => __live__
-
-    //      if dead { sum should be 3 to rencarnate }
-    //      if alive { sum should be in {2,3} to stay alive} else dies
-
-    //      change 10 to 0
-    //      change 11 to 1
-    //      */
-
-
-    //     for (let row = 0; row < this.currentCity.length; row++) {
-    //         for (let col = 0; col < this.currentCity[0].length; col++) {
-    //             // if alive, stays alive if neighbour count are in 2 or 3 only
-    //             // console.log(this.countLiveNeighbours(row, col));
-    //             if ((this.currentCity[row][col] % 10 === 1) && (!(this.countLiveNeighbours(row, col) == 2 || this.countLiveNeighbours(row, col) == 3))) 
-    //                 {
-    //                     this.currentCity[row][col] = 10; 
-    //                 }
-    //             else if (this.countLiveNeighbours(row, col) === 3) 
-    //                 {
-    //                     this.currentCity[row][col] = 11; 
-    //                 }
-    //         }
-    //     }
-    //     this.cleanUp();
-
-    //     return this.currentCity;
-    // }
 
     cleanUp() {
         for (let row = 0; row < this.currentCity.length; row++) {
@@ -85,9 +54,6 @@ export class City {
             neighbourCol = col + coordinates[1];
             if (neighbourRow > -1 && neighbourRow < this.currentCity.length && neighbourCol > -1 && neighbourCol < this.currentCity[0].length) {
                 if (this.currentCity[neighbourRow][neighbourCol] === 1 || this.currentCity[neighbourRow][neighbourCol] === 10) {
-                    // console.log(neighbourRow);
-                    // console.log(neighbourCol);
-                    // console.log(`value ${this.currentCity[neighbourRow][neighbourCol]}`)
                     neighbourCount += 1;
                 }
             }
