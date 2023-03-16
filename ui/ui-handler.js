@@ -1,5 +1,8 @@
 //init
 let city;
+let interval;
+let frameTimeGap = 500;
+
 const grid = document.querySelector(".grid");
 setListeners();
 
@@ -11,6 +14,7 @@ function initialize(width, height) {
 
 function setEmptyGrid(width, height) {
   grid.setAttribute("style", `grid-template-columns: repeat(${width}, 1fr);`);
+  grid.innerHTML = ""; //reset existing grid
 
   for (let row = 0; row < height; row++) {
     for (let column = 0; column < width; column++) {
@@ -42,8 +46,12 @@ function reflectToggle() {
 }
 
 function puddleAnimate() {
-  const cells = grid.children;
-  const timeGap = 100;
+  const cells = [...grid.children]; //to use .forEach()
+  cells.forEach((cell) => cell.classList.add("invisible"));
+
+  const totalTime = 1000;
+  const timeGap = totalTime / cells.length;
+
   animate(0);
 
   function animate(cellIndex) {
@@ -52,6 +60,7 @@ function puddleAnimate() {
     }
 
     const cell = cells[cellIndex];
+    cell.classList.remove("invisible");
     cell.classList.add("twinkle");
 
     setTimeout(() => animate(cellIndex + 1), timeGap);
@@ -60,12 +69,15 @@ function puddleAnimate() {
 
 //when user clicks play, and enjoying the "video"
 function play() {
-  const timeGap = 1000;
-  setInterval(showNextState, timeGap);
+  interval = setInterval(showNextState, frameTimeGap);
+}
+
+function pause() {
+  if (interval) clearInterval(interval);
 }
 
 function showNextState() {
-  console.log("next state");
+  console.log("frame");
   const state = city.nextState();
 
   for (const cell of grid.children) {
@@ -78,8 +90,17 @@ function showNextState() {
   }
 }
 
-function pause() {
-  clearInterval(showNextState);
+function adjustSpeed(speed) {
+  //speed from 0 to 10
+  const maxTimeGap = 1000;
+  const minTimeGap = 5;
+
+  const percent = 1 - speed / 10;
+  console.log("percent", percent);
+
+  frameTimeGap = minTimeGap + (maxTimeGap - minTimeGap) * percent;
+  pause();
+  play();
 }
 
 //for page transitions and taking inputs
@@ -98,11 +119,12 @@ function setListeners() {
   const playButton = document.querySelector("#play-btn");
   const pauseButton = document.querySelector("#pause-btn");
   const resetButton = document.querySelector("#reset-btn");
+  const speedInput = document.querySelector("#speed-input");
 
   //size prompt
-  sizeSubmit.addEventListener("click", () => {
+  sizeSubmit.addEventListener("click", async () => {
+    await transition([sizePrompt, grid], [togglePrompt, grid]);
     initialize(+widthInput.value, +heightInput.value);
-    transition([sizePrompt], [togglePrompt, grid]);
   });
 
   //toggle prompt
@@ -117,30 +139,64 @@ function setListeners() {
     pauseButton.classList.remove("display-none");
     playButton.classList.add("display-none");
   });
+
   pauseButton.addEventListener("click", () => {
     pause();
     playButton.classList.remove("display-none");
     pauseButton.classList.add("display-none");
   });
 
-  resetButton.addEventListener("click", () => {
+  speedInput.addEventListener("change", () => {
+    console.log(speedInput.value);
+    adjustSpeed(+speedInput.value);
+  });
+
+  resetButton.addEventListener("click", async () => {
     pause();
-    city = undefined;
-    transition([videoControls, grid], [sizePrompt]);
+    await transition([videoControls, grid], [sizePrompt]);
   });
 }
 
-function transition(toOffs, toOns) {
+async function transition(toOffs, toOns) {
+  //wait for all elements to turn off (some might be already off)
+  const onPromises = toOffs.map(turnOff);
+  await Promise.all(onPromises);
+
+  const offPromises = toOns.map(turnOn);
+  await Promise.all(offPromises);
+  console.log("done transitioning");
+}
+
+function turnOff(element) {
   return new Promise((resolve, reject) => {
-    toOffs.forEach((element) => element.classList.add("invisible"));
+    //no transition will happen
+    if (element.classList.contains("invisible")) {
+      element.classList.add("display-none");
+      resolve();
+      return;
+    }
 
-    toOffs[0].addEventListener("transitionend", () => {
-      toOffs.forEach((element) => element.classList.add("display-none"));
+    element.classList.add("invisible");
 
-      toOns.forEach((element) => element.classList.remove("display-none"));
-      toOns.forEach((element) => element.classList.remove("invisible"));
+    element.ontransitionend = () => {
+      element.classList.add("display-none");
+      resolve();
+    };
+  });
+}
 
-      toOns[0].addEventListener("transitionend", resolve);
-    });
+function turnOn(element) {
+  return new Promise((resolve, reject) => {
+    //no transition will happen
+    if (!element.classList.contains("invisible")) {
+      element.classList.remove("display-none");
+      resolve();
+      return;
+    }
+
+    element.classList.remove("display-none");
+    setTimeout(() => element.classList.remove("invisible"));
+
+    element.ontransitionend = resolve;
   });
 }

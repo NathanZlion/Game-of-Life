@@ -2,47 +2,49 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+
+  --cell-color: rgb(58, 58, 58);
 }
+
+/*core css*/
 
 .grid {
   display: grid;
-  gap: 5px;
+  gap: 1px;
   width: fit-content;
 }
 
 .cell {
-  width: 100px;
-  height: 100px;
+  width: 50px;
+  height: 50px;
   background-color: white;
   border: none;
-  transition-property: all;
-  transition-duration: 0.5s;
+
+  transition-property: backgound-color;
+  transition-duration: 0;
 }
 
 .dead-cell {
-  background-color: black;
+  background: var(--cell-color);
 }
 
 .twinkle {
   animation-name: twinkle-animate;
-  animation-duration: 1s;
+  animation-duration: 1.5s;
 }
+
 @keyframes twinkle-animate {
   0% {
-    background-color: black;
-  }
-
-  50% {
     background-color: white;
   }
 
   100% {
-    background-color: black;
+    background-color: var(--cell-color);
   }
 }
 
-.smooth-visibility {
-  transition: opacity, 0.2s;
+.smooth-transition {
+  transition: opacity 1s;
 }
 
 .invisible {
@@ -50,5 +52,92 @@
 }
 
 .display-none {
-  display: none;
+  display: none !important;
+}
+
+/*nice css*/
+* {
+  font-size: 1.1rem;
+  font-family: sans-serif;
+}
+
+.super-container {
+  padding: 2rem 0.5rem 1rem 0.5rem;
+  width: 100vw;
+  height: 100vh;
+
+  background: linear-gradient(45deg, rgb(0, 0, 0), rgb(43, 43, 43));
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.size-prompt,
+.toggle-prompt,
+.video-controls {
+  padding: 2rem;
+  background-color: rgb(211, 211, 211);
+  border-radius: 0.35rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.size-prompt h2 {
+  font-size: 1.5rem;
+}
+
+.size-prompt input {
+  border: none;
+  border-bottom: 5px solid var(--cell-color);
+  outline: none;
+
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.size-prompt button,
+.toggle-prompt button,
+.video-controls button,
+.speed-div {
+  padding: 0.5rem 0.75rem;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+  border: none;
+
+  border-radius: 0.5rem;
+
+  background: var(--cell-color);
+  color: white;
+}
+
+.grid-container {
+  margin-top: 3rem;
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.video-controls {
+  flex-direction: row;
+}
+#pause-btn {
+  background: green;
+}
+#play-btn {
+  background: blue;
+}
+#reset-btn {
+  background: rgb(141, 0, 0);
+}
+.speed-div {
+  background-color: rgb(143, 38, 0);
+  text-align: center;
 }

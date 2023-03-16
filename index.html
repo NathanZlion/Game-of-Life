@@ -10,31 +10,37 @@
     <script defer src="./ui/ui-handler.js"></script>
   </head>
   <body>
-    <div class="size-prompt smooth-visibility">
-      <h2>Size of my Game Of Life</h2>
-      <p>It should be ...</p>
-      <div>
-        <input type="number" id="height-input" /> <span>Cells High</span>
+    <div class="super-container">
+      <div class="size-prompt smooth-transition">
+        <h2>Size of my Game Of Life</h2>
+        <p>It should be ...</p>
+        <div>
+          <input type="number" id="height-input" /> <span>Cells High</span>
+        </div>
+        <div>
+          <input type="number" id="width-input" /> <span>Cells Wide</span>
+        </div>
+        <button id="size-submit">Continue</button>
       </div>
-      <div>
-        <input type="number" id="width-input" /> <span>Cells Wide</span>
-      </div>
-      <button id="size-submit">Continue</button>
-    </div>
 
-    <div>
-      <div class="toggle-prompt smooth-visibility invisible display-none">
+      <div class="toggle-prompt smooth-transition invisible display-none">
         <h2>Click on cells to toggle their life</h2>
         <button id="start-btn">Start</button>
       </div>
 
-      <div class="video-controls smooth-visibility invisible display-none">
+      <div class="video-controls smooth-transition invisible display-none">
         <button id="play-btn" class="display-none">Play</button>
         <button id="pause-btn">Pause</button>
         <button id="reset-btn">Reset</button>
+        <div class="speed-div">
+          <p>Speed</p>
+          <input id="speed-input" type="range" min="0" max="10" />
+        </div>
       </div>
 
-      <div class="grid"></div>
+      <div class="grid-container">
+        <div class="grid invisible smooth-transition display-none"></div>
+      </div>
     </div>
   </body>
 </html>
